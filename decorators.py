@@ -1,11 +1,13 @@
 import warnings
 import timeit
 from settings import *
+from functools import wraps
 
 
 def timetrack(label):
     """Utility function decorator for tracking execution time."""
     def timetrack_decorator(func):
+        @wraps(func)
         def wrapper(*args, **kwargs):
             time_point = timeit.default_timer()
             func(*args, **kwargs)
@@ -16,6 +18,7 @@ def timetrack(label):
 
 def suppress_warnings(func):
     """Utility function decorator to suppress warnings (in this case, probably just InsecureRequestWarning)."""
+    @wraps(func)
     def wrapper(*args, **kwargs):
         if SUPPRESS_WARNINGS:
             with warnings.catch_warnings():  # NB: warnings disabled

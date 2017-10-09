@@ -1,5 +1,8 @@
 """Module containing IssueTree, IssueNode classes for storing information about bugtracker issues."""
 
+from collections import defaultdict
+from functools import partial
+
 
 class IssueNode:
     """Class IssueNode.
@@ -18,18 +21,12 @@ class IssueNode:
             self.level = 0
         self.issue_id = issue_id
         self.subject = subject
-        self.store = {}
+        self.store = defaultdict(partial(defaultdict, int))
         self.children = []
 
-    def add(self, user, activity, hours):
-        """Add new or existing data to the node."""
-        if user in self.store.keys():
-            if activity in self.store[user].keys():  # This activity already recorded for user
-                self.store[user][activity] += hours
-            else:  # New activity for this user
-                self.store[user][activity] = hours
-        else:  # New user
-            self.store[user] = {activity: hours}
+    def add_data(self, user, activity, hours):
+        """Update an issue node with new time entry data."""
+        self.store[user][activity] += hours
 
     def __str__(self):
         children_str = ''
@@ -44,11 +41,12 @@ class IssueTree:
        roots - list of all root elements (class IssueNode)
        leaves - list of all leaf elements (class IssueNode)
     """
+
     def __init__(self):
         self.roots = []
         self.leaves = []
 
-    def init_node(self, issue_id, subject, parent=None):
+    def init_node(self, issue_id, subject, parent=None) -> IssueNode:
         """Initialize a new node."""
         if parent:  # Parent issue exists
             parent.children.append(IssueNode(issue_id=issue_id,
@@ -66,12 +64,7 @@ class IssueTree:
             self.leaves.append(new_root)
             return new_root
 
-    def add_data(self, node, user, activity, hours):
-        """Update an issue node with new time entry data."""
-        node.add(user, activity, hours)
-        return node
-
-    def __str__(self):
+    def __str__(self) -> str:
         roots_str = ''
         for root in self.roots:
             roots_str += root.__str__()
