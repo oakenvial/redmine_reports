@@ -1,5 +1,8 @@
 from redminelib import Redmine
-from settings import *
+try:
+    from local_settings import *
+except ImportError:
+    from settings import *
 from issue_tree import IssueTree
 from operator import add
 from decorators import timetrack, suppress_warnings
@@ -83,8 +86,11 @@ class RedmineManager:
                                                           to_date=self.to_date)
             for entry in time_entries:
                 # Time spent on the project (and not its issues)
-                set_of_roles = project.user_roles[entry.user.name]
-                resulting_activity = self.calculate_activity(set_of_roles, entry.activity.name)
+                if entry.user.name in project.user_roles:  # This may be not the case if the user has been excluded from the project
+                    set_of_roles = project.user_roles[entry.user.name]
+                    resulting_activity = self.calculate_activity(set_of_roles, entry.activity.name)
+                else:
+                    resulting_activity = entry.activity.name
                 if not hasattr(entry, 'issue'):
                     project.time_entries[entry.user.name][resulting_activity] += entry.hours
 
@@ -152,8 +158,11 @@ class RedmineManager:
                                                       from_date=self.from_date,
                                                       to_date=self.to_date)
         for entry in time_entries:
-            set_of_roles = project.user_roles[entry.user.name]
-            resulting_activity = self.calculate_activity(set_of_roles, entry.activity.name)
+            if entry.user.name in project.user_roles:  # This may be not the case if the user has been excluded from the project
+                set_of_roles = project.user_roles[entry.user.name]
+                resulting_activity = self.calculate_activity(set_of_roles, entry.activity.name)
+            else:
+                resulting_activity = entry.activity.name
             node.add_data(user=entry.user.name,
                           activity=resulting_activity,
                           hours=entry.hours)

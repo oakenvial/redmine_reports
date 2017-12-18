@@ -1,4 +1,7 @@
-from settings import *
+try:
+    from local_settings import *
+except ImportError:
+    from settings import *
 from report import Report
 from redmine_manager import RedmineManager
 from datetime import date, timedelta

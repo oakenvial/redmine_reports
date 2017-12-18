@@ -26,6 +26,9 @@ CERT_PATH = ''
 # Example of key-value pair: ('Developer', 'Testing'): 'Development'
 ROLE_ACT_EXCEPTIONS = {}
 
+# Activities that should be excluded from the report
+EXCLUDED_ACTIVITIES = {}
+
 # Number of days as timedelta from today in the past for getting time entries
 NUM_DAYS = 30
 
@@ -48,5 +51,7 @@ REPORT_MESSAGES = {'resource_info': {'RU': 'Информация по ресур
                    'root_issues_spent_time': {'RU': 'Суммарное время, затраченное на корневые задачи по проектам:',
                                               'EN': 'Total time spent on project''s root issues'},
                    'project': {'RU': 'Проект',
-                               'EN': 'Project'}
+                               'EN': 'Project'},
+                   'total': {'RU': 'Всего: ',
+                             'EN': 'Total: '},
                    }

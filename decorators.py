@@ -1,6 +1,9 @@
 import warnings
 import timeit
-from settings import *
+try:
+    from local_settings import *
+except ImportError:
+    from settings import *
 from functools import wraps
 
 
